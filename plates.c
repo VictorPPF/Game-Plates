@@ -368,32 +368,52 @@ int main(int argc, char **argv){
 		
 	}
 	
-	int maiorRecorde;
-	FILE *arq;
-	fopen("recorde.txt", "w");
-	fprintf(arq, "%d", timeInSec);
-	fclose(arq);
+	
 
-	//ALLEGRO_COLOR BKG_COLOR = al_map_rgb(255,255,255);
-	//colore a tela de branco (rgb(255,255,255))
+	//Texto de Game Over
 	al_clear_to_color(al_map_rgb(255,255,255));
 	char textoGameOver[100];
 	//sprintf(textoGameOver, "GAME OVER");
     snprintf(textoGameOver, sizeof(textoGameOver), "GAME OVER");
 	al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2, ALLEGRO_ALIGN_LEFT, textoGameOver);	
-		
-	//colore toda a tela de branco
-	// al_clear_to_color(al_map_rgb(0,0,0));
-	//imprime o texto armazenado em my_text na posicao x=10,y=10 e com a cor rgb(128,200,30)
-	// sprintf(my_text, "PERDEU PLAYBOY", winner);	
-	// al_draw_text(size_32, al_map_rgb(15, 200, 30), SCREEN_W/3, SCREEN_H/2, 0, my_text);
-	// sprintf(my_text, "Total de rebatidas: %d", count);	
-	// al_draw_text(size_32, al_map_rgb(15, 200, 30), SCREEN_W/3, SCREEN_H/2+100, 0, my_text);	
-	
-	
 	//reinicializa a tela
 	al_flip_display();	
-    al_rest(3);		   
+    al_rest(1);		   
+
+	//Salva o recorde
+	int maiorRecorde, novoRecorde=0;
+	FILE *arq;
+	arq=fopen("recorde.txt", "r");
+	if(arq == NULL)
+		printf("\nErro ao abrir o arquivo\n");
+	fscanf(arq, "%d", &maiorRecorde);
+	printf("\nTeste\n%d\n\n", maiorRecorde);
+	fclose(arq);
+	if(timeInSec>maiorRecorde){
+		novoRecorde=1;
+		maiorRecorde=timeInSec;
+		arq=fopen("recorde.txt", "w");
+		fprintf(arq,"%d",maiorRecorde);
+		if(arq == NULL)
+			printf("\nErro ao abrir o arquivo\n");
+		fclose(arq);
+	}
+
+
+	char textoPontos[50];
+	char textoRecorde[50];
+	if(novoRecorde){
+		char textoParabens[50];
+		snprintf(textoParabens, sizeof(textoParabens), "Novo recorde! Parabéns!");
+		al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+50, ALLEGRO_ALIGN_LEFT, textoParabens);	
+	}
+	snprintf(textoPontos, sizeof(textoPontos), "Sua pontuacao foi: %d", timeInSec);
+	snprintf(textoRecorde, sizeof(textoRecorde), "Recorde: %d", timeInSec);
+	al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+100, ALLEGRO_ALIGN_LEFT, textoPontos);	
+	al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+150, ALLEGRO_ALIGN_LEFT, textoRecorde);
+	//Atualiza a tela
+	al_flip_display();
+	al_rest(3);
 
 	//procedimentos de fim de jogo
 	al_destroy_font(size_32);
