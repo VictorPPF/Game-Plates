@@ -5,9 +5,10 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 //#include <stdlib.h>
-#include<math.h>
+// #include<math.h>
+#include <time.h>
 
-#define NUM_PRATOS 8
+#define NUM_PRATOS 6
 
 const float FPS = 100;  
 
@@ -101,7 +102,7 @@ void inicializaPratos(Prato pratos[]) {
 	int i;
 	for(i=0; i<NUM_PRATOS; i++) {
 		pratos[i].x = coord*(i+1); //Coord
-		pratos[i].tempoParaAparecer = geraTempoPrato(i*i-8*i+18, i*i-8*i+18+10);
+		pratos[i].tempoParaAparecer = geraTempoPrato(i*i-NUM_PRATOS*i+NUM_PRATOS*2.8, i*i-NUM_PRATOS*i+NUM_PRATOS*2.8+10);
 		pratos[i].energia = 255;
 		pratos[i].aparente = 0;
 		pratos[i].caiu = 0;
@@ -120,7 +121,7 @@ void desenha_pratos(Prato pratos[]){
 	int i;
 	for(i=0; i<NUM_PRATOS; i++){
 		if(pratos[i].sendoEquilibrado){
-			al_draw_line(pratos[i].x, pe, pratos[i].x, cabeca,  LINE_COLOR2, 2);
+			al_draw_line(pratos[i].x, pe, pratos[i].x, cabeca,  LINE_COLOR2, 2); //Desenha o bastao quando equilibrado
 		}else{
 			al_draw_line(pratos[i].x, pe, pratos[i].x, cabeca,  LINE_COLOR, 2); //Desenha os bastoes
 		}
@@ -198,7 +199,11 @@ void desenha_pontuacao(int tempoEmSegundos, ALLEGRO_FONT **font){
 }
  
 int main(int argc, char **argv){
-	
+
+
+	unsigned int seed = (unsigned int)time(NULL);
+
+	 srand(seed);
 	
 	ALLEGRO_DISPLAY *display = NULL;	
 	ALLEGRO_TIMER *timer = NULL;
@@ -408,7 +413,7 @@ int main(int argc, char **argv){
 		al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+50, ALLEGRO_ALIGN_LEFT, textoParabens);	
 	}
 	snprintf(textoPontos, sizeof(textoPontos), "Sua pontuacao foi: %d", timeInSec);
-	snprintf(textoRecorde, sizeof(textoRecorde), "Recorde: %d", timeInSec);
+	snprintf(textoRecorde, sizeof(textoRecorde), "Recorde: %d", maiorRecorde);
 	al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+100, ALLEGRO_ALIGN_LEFT, textoPontos);	
 	al_draw_text(size_32, al_map_rgb(0, 0, 0), SCREEN_W/3, SCREEN_H/2+150, ALLEGRO_ALIGN_LEFT, textoRecorde);
 	//Atualiza a tela
